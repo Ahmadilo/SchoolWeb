@@ -16,6 +16,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.login');
 
 Route::get('/Students', [StudentController::class, 'index'])->name('students.index');
 
+Route::post('/Students', [StudentController::class, 'store'])->name('students.store');
+
 Route::get('/tables.html', function () {
     return view('template.tables');
 })->name('tables.index');

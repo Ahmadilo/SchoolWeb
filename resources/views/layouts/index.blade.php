@@ -37,7 +37,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                     </div>
                     <div id="Modal-Body" class="modal-body">
-                        Here is Body of the modal. You can put any content here, such as forms, text, or images.
+                        @yield('Modal')
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
