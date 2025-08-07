@@ -75,6 +75,57 @@
         Add Student
     </button>
 
+    <!-- Modal -->
+    <div class="modal fade" id="StudentModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="myModalLabel">عنوان المودال</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <!-- صف البطاقة: صورة + معلومات -->
+                <div class="row mb-4 align-items-center">
+                <!-- صورة الطالب -->
+                <div class="col-4 text-center">
+                    <img src="https://via.placeholder.com/150" class="img-fluid rounded" alt="Student Image">
+                </div>
+                
+                <!-- معلومات الطالب -->
+                <div class="col-8">
+                    <h5>Full Name: <strong id="FullName">Ahmad Aden</strong></h5>
+                    <p id="Phone">Phone: 3847584</p>
+                    <p id="EnrollmentType"></p>
+                    <p id="Gender">Gender: Male</p>
+                    <p id="Status">Status: Active</p>
+                </div>
+                </div>
+
+                <!-- صف الأزرار -->
+                <div class="row text-center">
+                <div class="col">
+                    <button class="btn btn-warning w-100">Edit</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-danger w-100">Delete</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success w-100">Profile</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            <button type="button" class="btn btn-primary">حفظ</button>
+        </div> --}}
+        </div>
+    </div>
+    </div>
+
+
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css">
 
     <table id="StudentsTable" class="display">
@@ -89,7 +140,7 @@
         </thead>
         <tbody>
             @foreach ($students as $student)
-                <tr>
+                <tr data-id="{{ $student->id }}" data-bs-toggle="modal" data-bs-target="#StudentModal">
                     <td>{{ $student->person->Fullname }}</td>
                     <td>{{ $student->person->phone_number }}</td>
                     <td>{{ $student->EnrollmentType }}</td>
@@ -105,6 +156,20 @@
 
     <script>
         new DataTable('#StudentsTable');
+
+        document.querySelectorAll('#StudentsTable tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                const id = row.getAttribute('data-id');
+                // Fetch student data using AJAX or set it directly if available
+                // For example, you can use an AJAX call to get the student details by ID
+
+                document.getElementById('FullName').innerText = row.cells[0].innerText;
+                document.getElementById('Phone').innerText = 'Phone: ' + row.cells[1].innerText;
+                document.getElementById('EnrollmentType').innerText = 'Enrollment Type: ' + row.cells[2].innerText;
+                document.getElementById('Gender').innerText = 'Gender: ' + row.cells[3].innerText;
+                document.getElementById('Status').innerText = 'Status: ' + row.cells[4].innerText;
+            })
+        })
     </script>
 
 @endsection
