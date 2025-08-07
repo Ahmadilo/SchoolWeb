@@ -32,7 +32,7 @@ class StudentController extends Controller
 
         try 
         {
-            Log::info('Creating a new student', ['data' => $validated]);
+            //Log::info('Creating a new student', ['data' => $validated]);
             // إنشاء الشخص
             $person = Person::create([
                 'Fullname'      => $validated['Fullname'],
@@ -40,7 +40,7 @@ class StudentController extends Controller
                 'gender'        => $validated['gender'],
             ]);
 
-            Log::info('Person created successfully', ['person_id' => $person->id]);
+            //Log::info('Person created successfully', ['person_id' => $person->id]);
 
             // إنشاء الطالب المرتبط بالشخص
             Student::create([

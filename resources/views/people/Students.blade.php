@@ -64,15 +64,11 @@
 
 @section('content')
      @if ($errors->has('error'))
-        <div class="alert alert-danger">
-            {{ $errors->first('error') }}
-        </div>
+        <x-alert type="error" message="{{ $errors->first('error') }}"></x-alert>
     @endif
+
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <x-alert type="success" message="{{ session('success') }}"></x-alert>
     @endif
 
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
@@ -108,7 +104,6 @@
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 
     <script>
-        new DataTable("#example");
         new DataTable('#StudentsTable');
     </script>
 
