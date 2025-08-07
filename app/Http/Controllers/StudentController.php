@@ -69,17 +69,64 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         return view('people.show', compact('student'));
     }
-
-    public function edit($id)
+    
+    public function update(Request $request)
     {
-        $student = Student::findOrFail($id);
-        return view('people.edit', compact('student'));
+        log::info("is arraive here");
+        $validated = $request->validate([
+            'id' => 'required',
+            'Fullname'         => 'required|string|max:255',
+            'phone_number'     => 'nullable|string|max:15',
+            'gender'           => 'required|in:male,female,unselected',
+            'Enrollment_type'  => 'nullable|string|max:50',
+        ]);
+        $student = Student::findOrFail($request->id);
+
+        if($student === null) {
+            return redirect()->route('students.index')->with('error', 'Student not found');
+        }
+
+
+        DB::beginTransaction();
+
+        try
+        {
+            $person = Person::findOrFail($student->person_id);
+
+            $person->FullName = $validated['Fullname'];
+            $person->phone_number = $validated['phone_number'] ?? null;
+            $person->gender = $validated['gender'] ?? null;
+
+            $person->save();
+
+            $student->EnrollmentType = $validated['Enrollment_type'];
+            $student->save();
+
+            DB::commit();
+
+            return redirect()->route('students.index')->with('success','Update Student');
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to update student: ' . $e->getMessage()])->withInput();
+        }
     }
 
-    public function destore($id)
+    public function destroy($id)
     {
         $student = Student::findOrFail($id);
-        $student->delete();
-        return redirect()->route('students.index')->with('success', 'Student deleted successfully');
+        DB::beginTransaction();
+
+        try {
+            $person = Person::findOrFail($student->person_id);
+            $person->delete();
+            $student->delete();
+
+            DB::commit();
+            return redirect()->route('students.index')->with('success', 'Student deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Failed to delete student: ' . $e->getMessage()]);
+        }
     }
 }

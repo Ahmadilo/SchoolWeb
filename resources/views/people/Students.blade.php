@@ -22,10 +22,10 @@
         <div class="mb-3">
             <label for="gender" class="form-label">Gender</label>
             <select class="form-select" id="gender" name="gender" required>
-            <option value="" selected disabled>Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="unselected">Unselected</option>
+                <option value="" selected disabled>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unselected">Unselected</option>
             </select>
             <div class="invalid-feedback">
             Please select gender.
@@ -81,31 +81,62 @@
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="myModalLabel">عنوان المودال</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <button id="CloseEdit" type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
             <div class="container">
                 <!-- صف البطاقة: صورة + معلومات -->
                 <div class="row mb-4 align-items-center">
                 <!-- صورة الطالب -->
-                <div class="col-4 text-center">
-                    <img src="https://via.placeholder.com/150" class="img-fluid rounded" alt="Student Image">
-                </div>
-                
-                <!-- معلومات الطالب -->
-                <div class="col-8">
-                    <h5>Full Name: <strong id="FullName">Ahmad Aden</strong></h5>
-                    <p id="Phone">Phone: 3847584</p>
-                    <p id="EnrollmentType"></p>
-                    <p id="Gender">Gender: Male</p>
-                    <p id="Status">Status: Active</p>
-                </div>
+                    <div class="col-4 text-center">
+                        <img src="https://via.placeholder.com/150" class="img-fluid rounded" alt="Student Image">
+                    </div>
+                    
+                    <!-- معلومات الطالب -->
+                    <div id="StudentCard" class="col-8">
+                        <h5>Full Name: <strong id="FullName">Ahmad Aden</strong></h5>
+                        <p id="Phone">Phone: 3847584</p>
+                        <p id="EnrollmentType"></p>
+                        <p id="Gender">Gender: Male</p>
+                        <p id="Status">Status: Active</p>
+                    </div>
+                    <div id="StudentEditForm" class="col-8" style="display: none;">
+                        <form action="{{ route('students.update') }}" method="POST">
+                            @method('PUT')
+                            @csrf
+                            <input id="StudentID" type="hidden" name="id" value="">
+                            <div class="mb-3">
+                                <label for="Fullname" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="FullnameInput" name="Fullname" value="" required maxlength="255">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone_number" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumberInput" name="phone_number" value="" maxlength="15">
+                            </div>
+                            <div class="mb-3">
+                                 <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="genderInput" name="gender" required>
+                                    <option value="" disabled>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="unselected">Unselected</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Enrollment" class=" form-label">Enrollment Type</label>
+                                <select name="Enrollment_type" id="Enrollment" class=" form-select">
+                                    <option value="Normal Student" selected>Normal Student</option>
+                                </select>
+                            </div>
+                            <div class="mb-3"><button class="btn btn-success" type="submit">Update</button></div>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- صف الأزرار -->
                 <div class="row text-center">
                 <div class="col">
-                    <button class="btn btn-warning w-100">Edit</button>
+                    <button id="Edit" class="btn btn-warning w-100">Edit</button>
                 </div>
                 <div class="col">
                     <button class="btn btn-danger w-100">Delete</button>
@@ -160,16 +191,64 @@
         document.querySelectorAll('#StudentsTable tbody tr').forEach(row => {
             row.addEventListener('click', () => {
                 const id = row.getAttribute('data-id');
-                // Fetch student data using AJAX or set it directly if available
-                // For example, you can use an AJAX call to get the student details by ID
+
+                // ✅ التصحيح هنا
+                document.getElementById('StudentCard').setAttribute('data-id', id);
+
+                console.log('is move from here');
 
                 document.getElementById('FullName').innerText = row.cells[0].innerText;
                 document.getElementById('Phone').innerText = 'Phone: ' + row.cells[1].innerText;
                 document.getElementById('EnrollmentType').innerText = 'Enrollment Type: ' + row.cells[2].innerText;
                 document.getElementById('Gender').innerText = 'Gender: ' + row.cells[3].innerText;
                 document.getElementById('Status').innerText = 'Status: ' + row.cells[4].innerText;
-            })
-        })
+            });
+        });
+
+
+        document.getElementById("Edit").addEventListener('click', () => {
+            const StudentCard = document.getElementById('StudentCard');
+            
+            StudentCard.style.display = 'none';
+
+            const StudentEditForm = document.getElementById('StudentEditForm');
+
+            StudentEditForm.style.display = 'block';
+
+            document.getElementById('StudentID').value = document.getElementById('StudentCard').getAttribute('data-id');
+
+            document.getElementById('FullnameInput').value = document.getElementById('FullName').innerText;
+        
+            document.getElementById('phoneNumberInput').value = document.getElementById('Phone').innerText;
+        
+            const select = document.getElementById('genderInput');
+            const genderValue = document.getElementById('Gender').innerText.toLowerCase();
+
+            let Value = '';
+            if(typeof genderValue === 'string')
+            {
+                console.log("it is string");
+                console.log(genderValue);   
+                Value = genderValue.split(' ')[1].toLowerCase();
+            }
+            console.log(Value);
+            Array.from(select.options).forEach(option => {
+                if (option.innerText.toLowerCase() === Value) {
+                    option.selected = true;
+                }
+            });
+        });
+
+
+        document.getElementById("CloseEdit").addEventListener('click', () => {
+            const StudentCard = document.getElementById('StudentCard');
+            
+            StudentCard.style.display = 'block';
+
+            const StudentEditForm = document.getElementById('StudentEditForm');
+
+            StudentEditForm.style.display = 'none';
+        });
     </script>
 
 @endsection

@@ -18,6 +18,8 @@ Route::get('/Students', [StudentController::class, 'index'])->name('students.ind
 
 Route::post('/Students', [StudentController::class, 'store'])->name('students.store');
 
+Route::put('/Students', [StudentController::class, 'update'])->name('students.update');
+
 Route::get('/tables.html', function () {
     return view('template.tables');
 })->name('tables.index');
