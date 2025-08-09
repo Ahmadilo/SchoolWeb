@@ -139,7 +139,7 @@
                     <button id="Edit" class="btn btn-warning w-100">Edit</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-danger w-100">Delete</button>
+                    <button id="Delete" data-bs-toggle="modal" data-bs-target="#confirmModal" class="btn btn-danger w-100">Delete</button>
                 </div>
                 <div class="col">
                     <button class="btn btn-success w-100">Profile</button>
@@ -181,6 +181,31 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="confirmModalLabel">تحذير</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                    هل أنت متأكد أنك تريد القيام بهذه العملية؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="confirmBtn">موافق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form action="{{ route('students.destroy') }}" method="POST" style="display: none;">
+        @method('DELETE')
+        @csrf
+        <input type="number" name="id" id="deleteid">
+        <button id="btn-delete" type="submit">Submt</button>
+    </form>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
@@ -248,6 +273,16 @@
             const StudentEditForm = document.getElementById('StudentEditForm');
 
             StudentEditForm.style.display = 'none';
+        });
+
+        document.getElementById('Delete').addEventListener('click', () => {
+            const id = StudentCard.getAttribute('data-id');
+            
+            document.getElementById('deleteid').value = id;
+
+            document.getElementById('confirmBtn').addEventListener('click', () => {
+                document.getElementById('btn-delete').click();
+            })
         });
     </script>
 

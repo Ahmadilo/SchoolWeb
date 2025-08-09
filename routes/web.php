@@ -20,6 +20,8 @@ Route::post('/Students', [StudentController::class, 'store'])->name('students.st
 
 Route::put('/Students', [StudentController::class, 'update'])->name('students.update');
 
+Route::delete('/Students', [StudentController::class, 'destroy'])->name('students.destroy');
+
 Route::get('/tables.html', function () {
     return view('template.tables');
 })->name('tables.index');

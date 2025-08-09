@@ -67,7 +67,7 @@ class StudentController extends Controller
     public function show($id)
     {
         $student = Student::findOrFail($id);
-        return view('people.show', compact('student'));
+        return view('people.Students', compact('student'));
     }
     
     public function update(Request $request)
@@ -112,15 +112,16 @@ class StudentController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $student = Student::findOrFail($id);
         DB::beginTransaction();
 
         try {
             $person = Person::findOrFail($student->person_id);
-            $person->delete();
             $student->delete();
+            $person->delete();
 
             DB::commit();
             return redirect()->route('students.index')->with('success', 'Student deleted successfully');
